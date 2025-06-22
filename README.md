@@ -2,15 +2,20 @@
 
 Welcome to the **UL Student Access Gate** project repository!
 
-This project is a modern web application designed to manage and streamline student access, information, and dashboards for the University of DDU (UL). Built with a focus on usability and rapid development, this project leverages the power of React, TypeScript, Tailwind CSS, and the Lovable platform.
+This project is a modern web application designed to manage and streamline student access, information, and dashboards for the University of DDU (UL). Built with a focus on usability and rapid development.
+
+---
+
+## Preview
+
+![Student Login Page](image1)
 
 ---
 
 ## Project Info
 
-
 - **Repository:** [GitHub - zupeirr/ul-student-access-gate](https://github.com/zupeirr/ul-student-access-gate)
-
+-  ** check this link ** ( https://students-page-login.lovable.app).
 ---
 
 ## Features
@@ -33,8 +38,6 @@ This project is a modern web application designed to manage and streamline stude
 - [Lovable](https://lovable.dev/) (AI-powered development & hosting platform)
 
 ---
-
-
 
 ---
 
@@ -63,13 +66,6 @@ You can edit this project in several ways:
 - Open a new Codespace for a full cloud dev environment.
 
 ---
-
-## Deployment
-
-To deploy, simply open your project in [Lovable](https://lovable.dev/projects/cbb64704-4d8b-4c35-aa58-bddc10c3c754) and click on **Share → Publish**.
-
----
-
 
 
 
