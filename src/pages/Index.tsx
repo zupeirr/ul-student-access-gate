@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,29 +6,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner";
 import { Eye, EyeOff, GraduationCap, Lock, Mail } from "lucide-react";
 import StudentDashboard from '../components/StudentDashboard';
-
 const Index = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!email || !password) {
       toast.error("Please fill in all fields");
       return;
     }
-
     if (!email.includes('@ddu.ie')) {
       toast.error("Please use your DDU student email address");
       return;
     }
-
     setIsLoading(true);
-    
+
     // Simulate login process with credential validation
     setTimeout(() => {
       setIsLoading(false);
@@ -41,7 +35,6 @@ const Index = () => {
       }
     }, 2000);
   };
-
   const handleLogout = () => {
     setIsLoggedIn(false);
     setEmail('');
@@ -55,13 +48,12 @@ const Index = () => {
   }
 
   // Show login form if not logged in
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+  return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23003d82' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }} />
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23003d82' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+      }} />
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -94,15 +86,7 @@ const Index = () => {
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="student@ddu.ie"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 border-gray-200 focus:border-[#003d82] focus:ring-[#003d82] transition-colors"
-                    required
-                  />
+                  <Input id="email" type="email" placeholder="student@ddu.ie" value={email} onChange={e => setEmail(e.target.value)} className="pl-10 h-12 border-gray-200 focus:border-[#003d82] focus:ring-[#003d82] transition-colors" required />
                 </div>
               </div>
 
@@ -113,25 +97,9 @@ const Index = () => {
                 </Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 border-gray-200 focus:border-[#003d82] focus:ring-[#003d82] transition-colors"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
+                  <Input id="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} className="pl-10 pr-10 h-12 border-gray-200 focus:border-[#003d82] focus:ring-[#003d82] transition-colors" required />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
@@ -148,19 +116,11 @@ const Index = () => {
               </div>
 
               {/* Login Button */}
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-12 bg-[#003d82] hover:bg-blue-800 text-white font-medium text-base transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
+              <Button type="submit" disabled={isLoading} className="w-full h-12 bg-[#003d82] hover:bg-blue-800 text-white font-medium text-base transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
+                {isLoading ? <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <span>Signing in...</span>
-                  </div>
-                ) : (
-                  "Sign In"
-                )}
+                  </div> : "Sign In"}
               </Button>
             </form>
 
@@ -185,7 +145,7 @@ const Index = () => {
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-gray-500">
-          <p>© 2024 Dire Dawa University. All rights reserved.</p>
+          <p>© 2024 Dire Dawa University. All rights reserved. Powered by @zupeirr.</p>
           <div className="flex justify-center space-x-4 mt-2">
             <a href="#" className="hover:text-gray-700 transition-colors">Privacy Policy</a>
             <span>•</span>
@@ -193,8 +153,6 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
