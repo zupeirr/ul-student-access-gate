@@ -6,12 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Eye, EyeOff, GraduationCap, Lock, Mail } from "lucide-react";
+import StudentDashboard from '../components/StudentDashboard';
 
 const Index = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,12 +35,26 @@ const Index = () => {
       setIsLoading(false);
       if (email === 'suber@ddu.ie' && password === 'subeer123') {
         toast.success("Login successful! Welcome to DDU Student Portal");
+        setIsLoggedIn(true);
       } else {
         toast.error("Invalid credentials. Please check your email and password.");
       }
     }, 2000);
   };
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setEmail('');
+    setPassword('');
+    toast.success("Logged out successfully");
+  };
+
+  // Show dashboard if logged in
+  if (isLoggedIn) {
+    return <StudentDashboard onLogout={handleLogout} />;
+  }
+
+  // Show login form if not logged in
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
       {/* Background Pattern */}
