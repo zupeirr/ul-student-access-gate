@@ -6,9 +6,7 @@ This project is a modern web application designed to manage and streamline stude
 
 ---
 
-## Preview
 
-![Student Login Page](image1)
 
 ---
 
