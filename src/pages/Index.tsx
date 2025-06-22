@@ -21,17 +21,21 @@ const Index = () => {
       return;
     }
 
-    if (!email.includes('@ul.ie')) {
-      toast.error("Please use your UL student email address");
+    if (!email.includes('@ddu.ie')) {
+      toast.error("Please use your DDU student email address");
       return;
     }
 
     setIsLoading(true);
     
-    // Simulate login process
+    // Simulate login process with credential validation
     setTimeout(() => {
       setIsLoading(false);
-      toast.success("Login successful! Welcome to UL Student Portal");
+      if (email === 'suber@ddu.ie' && password === 'subeer123') {
+        toast.success("Login successful! Welcome to DDU Student Portal");
+      } else {
+        toast.error("Invalid credentials. Please check your email and password.");
+      }
     }, 2000);
   };
 
@@ -50,7 +54,7 @@ const Index = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-[#003d82] rounded-full mb-4">
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">University of Limerick</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dire Dawa University</h1>
           <p className="text-gray-600">Student Access Portal</p>
         </div>
 
@@ -61,7 +65,7 @@ const Index = () => {
               Student Login
             </CardTitle>
             <CardDescription className="text-gray-600">
-              Enter your UL credentials to access your student portal
+              Enter your DDU credentials to access your student portal
             </CardDescription>
           </CardHeader>
           
@@ -77,7 +81,7 @@ const Index = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="student@ul.ie"
+                    placeholder="student@ddu.ie"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 h-12 border-gray-200 focus:border-[#003d82] focus:ring-[#003d82] transition-colors"
@@ -165,7 +169,7 @@ const Index = () => {
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-gray-500">
-          <p>© 2024 University of Limerick. All rights reserved.</p>
+          <p>© 2024 Dire Dawa University. All rights reserved.</p>
           <div className="flex justify-center space-x-4 mt-2">
             <a href="#" className="hover:text-gray-700 transition-colors">Privacy Policy</a>
             <span>•</span>
