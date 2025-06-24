@@ -112,7 +112,7 @@ const CoursePage = () => {
             </Button>
             <div className="flex items-center">
               <BookOpen className="h-6 w-6 text-blue-600 mr-2" />
-              <span className="text-xl font-semibold">LearnHub</span>
+              <span className="text-xl font-semibold">SomHub</span>
             </div>
           </div>
         </div>

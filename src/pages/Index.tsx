@@ -22,7 +22,7 @@ const Index = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <BookOpen className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">LearnHub</h1>
+              <h1 className="text-2xl font-bold text-gray-900">SomHub</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
               <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Courses</a>
@@ -149,7 +149,7 @@ const Index = () => {
             <div>
               <div className="flex items-center mb-4">
                 <BookOpen className="h-8 w-8 text-blue-400 mr-2" />
-                <h3 className="text-xl font-bold">LearnHub</h3>
+                <h3 className="text-xl font-bold">SomHub</h3>
               </div>
               <p className="text-gray-400">
                 Empowering learners worldwide with quality education and expert instruction.
@@ -184,7 +184,7 @@ const Index = () => {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 LearnHub. All rights reserved.</p>
+            <p>&copy; 2024 SomHub. All rights reserved.</p>
           </div>
         </div>
       </footer>
