@@ -1,5 +1,4 @@
 
-import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,53 +17,25 @@ import {
   Share2
 } from "lucide-react";
 import { toast } from "sonner";
+import { useCourses } from '../hooks/useCourses';
+import { useLearning } from '../contexts/LearningContext';
 
 const CoursePage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const [enrolledProgress, setEnrolledProgress] = useState(0);
-  const [isEnrolled, setIsEnrolled] = useState(false);
+  const { getCourseById } = useCourses();
+  const { 
+    enrollInCourse, 
+    completeLesson, 
+    getCourseProgress, 
+    isEnrolled, 
+    getCompletedLessons 
+  } = useLearning();
 
-  // Mock course data - in a real app, this would come from an API
-  const courseData = {
-    '1': {
-      title: 'Complete Web Development Bootcamp',
-      instructor: 'Dr. Sarah Johnson',
-      rating: 4.8,
-      students: 12543,
-      duration: '45 hours',
-      price: '$99',
-      image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=400&fit=crop',
-      description: 'Learn HTML, CSS, JavaScript, React, and Node.js from scratch. This comprehensive course will take you from beginner to professional web developer.',
-      category: 'Programming',
-      lessons: [
-        { id: 1, title: 'Introduction to Web Development', duration: '15 min', completed: false },
-        { id: 2, title: 'HTML Fundamentals', duration: '45 min', completed: false },
-        { id: 3, title: 'CSS Styling and Layout', duration: '60 min', completed: false },
-        { id: 4, title: 'JavaScript Basics', duration: '90 min', completed: false },
-        { id: 5, title: 'DOM Manipulation', duration: '75 min', completed: false },
-        { id: 6, title: 'Introduction to React', duration: '120 min', completed: false },
-        { id: 7, title: 'React Components and Props', duration: '90 min', completed: false },
-        { id: 8, title: 'State Management', duration: '105 min', completed: false },
-        { id: 9, title: 'Backend with Node.js', duration: '150 min', completed: false },
-        { id: 10, title: 'Database Integration', duration: '120 min', completed: false },
-      ],
-      requirements: [
-        'Basic computer skills',
-        'No prior programming experience required',
-        'Access to a computer with internet connection'
-      ],
-      outcomes: [
-        'Build responsive websites with HTML, CSS, and JavaScript',
-        'Create dynamic web applications with React',
-        'Develop backend APIs with Node.js',
-        'Deploy full-stack applications',
-        'Understand modern web development workflows'
-      ]
-    }
-  };
-
-  const course = courseData[courseId as keyof typeof courseData];
+  const course = getCourseById(courseId!);
+  const enrolled = isEnrolled(courseId!);
+  const progress = getCourseProgress(courseId!);
+  const completedLessons = getCompletedLessons(courseId!);
 
   if (!course) {
     return (
@@ -77,16 +48,52 @@ const CoursePage = () => {
     );
   }
 
+  // Mock lesson data
+  const lessons = [
+    { id: 1, title: 'Introduction to Web Development', duration: '15 min' },
+    { id: 2, title: 'HTML Fundamentals', duration: '45 min' },
+    { id: 3, title: 'CSS Styling and Layout', duration: '60 min' },
+    { id: 4, title: 'JavaScript Basics', duration: '90 min' },
+    { id: 5, title: 'DOM Manipulation', duration: '75 min' },
+    { id: 6, title: 'Introduction to React', duration: '120 min' },
+    { id: 7, title: 'React Components and Props', duration: '90 min' },
+    { id: 8, title: 'State Management', duration: '105 min' },
+    { id: 9, title: 'Backend with Node.js', duration: '150 min' },
+    { id: 10, title: 'Database Integration', duration: '120 min' },
+  ];
+
+  const requirements = [
+    'Basic computer skills',
+    'No prior programming experience required',
+    'Access to a computer with internet connection'
+  ];
+
+  const outcomes = [
+    'Build responsive websites with HTML, CSS, and JavaScript',
+    'Create dynamic web applications with React',
+    'Develop backend APIs with Node.js',
+    'Deploy full-stack applications',
+    'Understand modern web development workflows'
+  ];
+
   const handleEnroll = () => {
-    setIsEnrolled(true);
+    enrollInCourse(courseId!);
     toast.success('Successfully enrolled in the course!');
   };
 
   const handleLessonComplete = (lessonId: number) => {
-    const completedLessons = course.lessons.filter(lesson => lesson.completed).length + 1;
-    const progress = (completedLessons / course.lessons.length) * 100;
-    setEnrolledProgress(progress);
+    if (!enrolled) {
+      toast.error('Please enroll in the course first!');
+      return;
+    }
+    
+    completeLesson(courseId!, lessonId);
     toast.success('Lesson completed!');
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success('Course link copied to clipboard!');
   };
 
   return (
@@ -123,8 +130,13 @@ const CoursePage = () => {
                 className="w-full h-64 object-cover rounded-lg"
               />
               <div className="absolute inset-0 bg-black bg-opacity-40 rounded-lg flex items-center justify-center">
-                <Play className="w-16 h-16 text-white" />
+                <Play className="w-16 h-16 text-white cursor-pointer hover:scale-110 transition-transform" />
               </div>
+              {enrolled && (
+                <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  Enrolled
+                </div>
+              )}
             </div>
 
             <div className="mb-6">
@@ -162,42 +174,69 @@ const CoursePage = () => {
                   <CardHeader>
                     <CardTitle>Course Content</CardTitle>
                     <CardDescription>
-                      {course.lessons.length} lessons • {course.duration} total length
+                      {lessons.length} lessons • {course.duration} total length
                     </CardDescription>
+                    {enrolled && (
+                      <div className="mt-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium">Your Progress</span>
+                          <span className="text-sm text-gray-500">{Math.round(progress)}%</span>
+                        </div>
+                        <Progress value={progress} className="h-2" />
+                      </div>
+                    )}
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {course.lessons.map((lesson, index) => (
-                        <div 
-                          key={lesson.id}
-                          className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
-                        >
-                          <div className="flex items-center space-x-3">
-                            <span className="text-sm text-gray-500 w-8">
-                              {index + 1}.
-                            </span>
-                            <div>
-                              <h4 className="font-medium">{lesson.title}</h4>
-                              <p className="text-sm text-gray-500">{lesson.duration}</p>
+                      {lessons.map((lesson, index) => {
+                        const isCompleted = completedLessons.includes(lesson.id);
+                        return (
+                          <div 
+                            key={lesson.id}
+                            className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${
+                              isCompleted ? 'bg-green-50 border-green-200' : 'hover:bg-gray-50'
+                            }`}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <span className="text-sm text-gray-500 w-8">
+                                {index + 1}.
+                              </span>
+                              <div>
+                                <h4 className={`font-medium ${isCompleted ? 'text-green-800' : ''}`}>
+                                  {lesson.title}
+                                </h4>
+                                <p className="text-sm text-gray-500">{lesson.duration}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              {enrolled && !isCompleted && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleLessonComplete(lesson.id)}
+                                >
+                                  <Play className="w-4 h-4 mr-1" />
+                                  Start
+                                </Button>
+                              )}
+                              {isCompleted && (
+                                <CheckCircle className="w-5 h-5 text-green-500" />
+                              )}
+                              {!enrolled && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  disabled
+                                  className="text-gray-400"
+                                >
+                                  <Play className="w-4 h-4 mr-1" />
+                                  Locked
+                                </Button>
+                              )}
                             </div>
                           </div>
-                          <div className="flex items-center space-x-2">
-                            {isEnrolled && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleLessonComplete(lesson.id)}
-                              >
-                                <Play className="w-4 h-4 mr-1" />
-                                Watch
-                              </Button>
-                            )}
-                            {lesson.completed && (
-                              <CheckCircle className="w-5 h-5 text-green-500" />
-                            )}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </CardContent>
                 </Card>
@@ -211,7 +250,7 @@ const CoursePage = () => {
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-2">
-                        {course.outcomes.map((outcome, index) => (
+                        {outcomes.map((outcome, index) => (
                           <li key={index} className="flex items-start space-x-2">
                             <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                             <span className="text-sm">{outcome}</span>
@@ -227,7 +266,7 @@ const CoursePage = () => {
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-2">
-                        {course.requirements.map((requirement, index) => (
+                        {requirements.map((requirement, index) => (
                           <li key={index} className="flex items-start space-x-2">
                             <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
                             <span className="text-sm">{requirement}</span>
@@ -280,7 +319,7 @@ const CoursePage = () => {
           <div className="lg:col-span-1">
             <Card className="sticky top-8">
               <CardContent className="p-6">
-                {!isEnrolled ? (
+                {!enrolled ? (
                   <>
                     <div className="text-center mb-6">
                       <div className="text-3xl font-bold text-blue-600 mb-2">{course.price}</div>
@@ -304,9 +343,12 @@ const CoursePage = () => {
                     <div className="mb-6">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium">Your Progress</span>
-                        <span className="text-sm text-gray-500">{Math.round(enrolledProgress)}%</span>
+                        <span className="text-sm text-gray-500">{Math.round(progress)}%</span>
                       </div>
-                      <Progress value={enrolledProgress} className="h-2" />
+                      <Progress value={progress} className="h-2" />
+                      <p className="text-sm text-gray-500 mt-2">
+                        {completedLessons.length} of {lessons.length} lessons completed
+                      </p>
                     </div>
                     
                     <Button className="w-full mb-4" size="lg">
@@ -336,7 +378,11 @@ const CoursePage = () => {
                 </div>
                 
                 <div className="border-t pt-4 mt-6">
-                  <Button variant="outline" className="w-full mb-2">
+                  <Button 
+                    variant="outline" 
+                    className="w-full mb-2"
+                    onClick={handleShare}
+                  >
                     <Share2 className="w-4 h-4 mr-2" />
                     Share Course
                   </Button>

@@ -1,8 +1,9 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Users, Clock, Play } from "lucide-react";
+import { Star, Users, Clock, Play, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLearning } from '../contexts/LearningContext';
 
 interface Course {
   id: string;
@@ -23,6 +24,10 @@ interface CourseCardProps {
 
 const CourseCard = ({ course }: CourseCardProps) => {
   const navigate = useNavigate();
+  const { isEnrolled, getCourseProgress } = useLearning();
+  
+  const enrolled = isEnrolled(course.id);
+  const progress = getCourseProgress(course.id);
 
   const handleViewCourse = () => {
     navigate(`/course/${course.id}`);
@@ -44,6 +49,13 @@ const CourseCard = ({ course }: CourseCardProps) => {
             {course.category}
           </span>
         </div>
+        {enrolled && (
+          <div className="absolute top-4 right-4">
+            <div className="bg-green-500 text-white p-1 rounded-full">
+              <CheckCircle className="w-4 h-4" />
+            </div>
+          </div>
+        )}
       </div>
       
       <CardHeader className="pb-3">
@@ -59,6 +71,21 @@ const CourseCard = ({ course }: CourseCardProps) => {
         <p className="text-sm text-gray-600 mb-4 line-clamp-2">
           {course.description}
         </p>
+        
+        {enrolled && progress > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-500">Progress</span>
+              <span className="text-xs text-gray-500">{Math.round(progress)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-1.5">
+              <div 
+                className="bg-blue-600 h-1.5 rounded-full transition-all duration-300" 
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
         
         <div className="flex items-center justify-between mb-4 text-sm text-gray-500">
           <div className="flex items-center space-x-1">
@@ -76,9 +103,14 @@ const CourseCard = ({ course }: CourseCardProps) => {
         </div>
         
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-blue-600">{course.price}</span>
-          <Button onClick={handleViewCourse} className="bg-blue-600 hover:bg-blue-700">
-            View Course
+          <span className="text-2xl font-bold text-blue-600">
+            {enrolled ? 'Enrolled' : course.price}
+          </span>
+          <Button 
+            onClick={handleViewCourse} 
+            className={enrolled ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}
+          >
+            {enrolled ? 'Continue' : 'View Course'}
           </Button>
         </div>
       </CardContent>

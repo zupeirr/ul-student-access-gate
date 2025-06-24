@@ -1,101 +1,18 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, BookOpen, Users, Star, Clock, Play } from "lucide-react";
+import { Search, BookOpen } from "lucide-react";
+import { useCourses } from '../hooks/useCourses';
+import { useLearning } from '../contexts/LearningContext';
 import CourseCard from '../components/CourseCard';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
-
-  const courses = [
-    {
-      id: '1',
-      title: 'Complete Web Development Bootcamp',
-      instructor: 'Dr. Sarah Johnson',
-      rating: 4.8,
-      students: 12543,
-      duration: '45 hours',
-      price: '$99',
-      image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=250&fit=crop',
-      description: 'Learn HTML, CSS, JavaScript, React, and Node.js from scratch',
-      category: 'Programming'
-    },
-    {
-      id: '2',
-      title: 'Data Science & Machine Learning',
-      instructor: 'Prof. Michael Chen',
-      rating: 4.9,
-      students: 8967,
-      duration: '60 hours',
-      price: '$149',
-      image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=250&fit=crop',
-      description: 'Master Python, pandas, scikit-learn, and TensorFlow',
-      category: 'Data Science'
-    },
-    {
-      id: '3',
-      title: 'UI/UX Design Fundamentals',
-      instructor: 'Emily Rodriguez',
-      rating: 4.7,
-      students: 6742,
-      duration: '30 hours',
-      price: '$79',
-      image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=250&fit=crop',
-      description: 'Learn design principles, Figma, and user research',
-      category: 'Design'
-    },
-    {
-      id: '4',
-      title: 'Digital Marketing Mastery',
-      instructor: 'James Wilson',
-      rating: 4.6,
-      students: 5234,
-      duration: '25 hours',
-      price: '$69',
-      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop',
-      description: 'SEO, Social Media, Content Marketing, and Analytics',
-      category: 'Marketing'
-    },
-    {
-      id: '5',
-      title: 'Mobile App Development',
-      instructor: 'Alex Kumar',
-      rating: 4.8,
-      students: 4156,
-      duration: '50 hours',
-      price: '$129',
-      image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=250&fit=crop',
-      description: 'Build iOS and Android apps with React Native',
-      category: 'Programming'
-    },
-    {
-      id: '6',
-      title: 'Cybersecurity Essentials',
-      instructor: 'Dr. Lisa Zhang',
-      rating: 4.9,
-      students: 3892,
-      duration: '40 hours',
-      price: '$119',
-      image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=250&fit=crop',
-      description: 'Network security, ethical hacking, and risk management',
-      category: 'Security'
-    }
-  ];
-
-  const filteredCourses = courses.filter(course =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.instructor.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const categories = ['All', 'Programming', 'Data Science', 'Design', 'Marketing', 'Security'];
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const { categories, filterCourses } = useCourses();
+  const { enrolledCourses } = useLearning();
 
-  const categoryFilteredCourses = selectedCategory === 'All' 
-    ? filteredCourses 
-    : filteredCourses.filter(course => course.category === selectedCategory);
+  const filteredCourses = filterCourses(searchTerm, selectedCategory);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -116,6 +33,11 @@ const Index = () => {
             <div className="flex items-center space-x-4">
               <Button variant="outline">Sign In</Button>
               <Button>Get Started</Button>
+              {enrolledCourses.length > 0 && (
+                <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                  {enrolledCourses.length} enrolled
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -179,17 +101,44 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Search Results Info */}
+      {searchTerm && (
+        <section className="px-4 sm:px-6 lg:px-8 mb-4">
+          <div className="max-w-7xl mx-auto">
+            <p className="text-gray-600 text-center">
+              Found {filteredCourses.length} courses for "{searchTerm}"
+            </p>
+          </div>
+        </section>
+      )}
+
       {/* Courses Grid */}
       <section className="px-4 sm:px-6 lg:px-8 pb-20">
         <div className="max-w-7xl mx-auto">
           <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-            Popular Courses
+            {selectedCategory === 'All' ? 'Popular Courses' : `${selectedCategory} Courses`}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {categoryFilteredCourses.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </div>
+          {filteredCourses.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No courses found matching your criteria.</p>
+              <Button 
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('All');
+                }}
+                variant="outline"
+                className="mt-4"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
