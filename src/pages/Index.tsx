@@ -1,18 +1,32 @@
+
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, BookOpen } from "lucide-react";
+import { Search, BookOpen, User, Settings, HelpCircle, MessageCircle } from "lucide-react";
 import { useCourses } from '../hooks/useCourses';
 import { useLearning } from '../contexts/LearningContext';
 import CourseCard from '../components/CourseCard';
+import AuthModal from '../components/AuthModal';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const { categories, filterCourses } = useCourses();
   const { enrolledCourses } = useLearning();
 
   const filteredCourses = filterCourses(searchTerm, selectedCategory);
+
+  const handleSignInClick = () => {
+    setAuthMode('signin');
+    setAuthModalOpen(true);
+  };
+
+  const handleGetStartedClick = () => {
+    setAuthMode('signup');
+    setAuthModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -25,14 +39,29 @@ const Index = () => {
               <h1 className="text-2xl font-bold text-gray-900">SomHub</h1>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Courses</a>
-              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Categories</a>
-              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">About</a>
-              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors">Contact</a>
+              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors flex items-center space-x-1">
+                <BookOpen className="w-4 h-4" />
+                <span>Courses</span>
+              </a>
+              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors flex items-center space-x-1">
+                <Settings className="w-4 h-4" />
+                <span>Categories</span>
+              </a>
+              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors flex items-center space-x-1">
+                <HelpCircle className="w-4 h-4" />
+                <span>About</span>
+              </a>
+              <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors flex items-center space-x-1">
+                <MessageCircle className="w-4 h-4" />
+                <span>Contact</span>
+              </a>
             </nav>
             <div className="flex items-center space-x-4">
-              <Button variant="outline">Sign In</Button>
-              <Button>Get Started</Button>
+              <Button variant="outline" onClick={handleSignInClick} className="flex items-center space-x-1">
+                <User className="w-4 h-4" />
+                <span>Sign In</span>
+              </Button>
+              <Button onClick={handleGetStartedClick}>Get Started</Button>
               {enrolledCourses.length > 0 && (
                 <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
                   {enrolledCourses.length} enrolled
@@ -188,6 +217,14 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* Auth Modal */}
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        mode={authMode}
+        onModeChange={setAuthMode}
+      />
     </div>
   );
 };
